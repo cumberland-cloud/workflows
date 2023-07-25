@@ -1,0 +1,12 @@
+name: documentation
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+    github_pages:
+      uses: chinchalinchin/github-workflows/.github/workflows/gh-pages.yml@main
+

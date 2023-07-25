@@ -1,0 +1,141 @@
+# Workflow to generate website resources using Sphinx Material and commit them to the gh-pages branch of a repository. 
+# Requirements:
+#   1.The gh-pages branch must be initialized prior to using this workflow. 
+#   2. The Sphinx project must be nested in a /docs/ directory. 
+# This workflow can also be configured to work with tfdocs by passing in an input variable. If using this feature, there is an additional requirement:
+#   3. your repository must contain a .terraform-docs.yml configuration file in the project's root directory.
+
+name: Sphinx Material GitHub Pages Reusable Action
+
+# see: https://docs.github.com/en/actions/using-workflows/reusing-workflows#overview
+on: 
+  workflow_call:
+    # see: https://docs.github.com/en/actions/using-workflows/reusing-workflows#passing-inputs-and-secrets-to-a-reusable-workflow
+    inputs:
+      TFDOCS:
+        required: false
+        description: Flag to run tf-docs before sphinx to generate markdown. Note, it is assumed the .terraform-docs.yml is configured to output markdown into the Sphinx /source/ directory and that no further configuration is required.
+        default: false
+        type: string
+      ACTIONS_BOT_USERNAME:
+        required: false
+        description: Username of the bot that will push commits back to the gh-pages branch of the repository.
+        default: github-slave-bot
+        type: string
+      ACTIONS_BOT_EMAIL:
+        required: false
+        description: Email of the bot that will push commits back to the gh-pages branch of the repository.
+        default: slave@github.com
+        type: string
+
+jobs:
+  # TODO: allow user to specify which theme and version to use.
+  sphinx_gh_pages:
+    name: github pages
+    runs-on: ubuntu-latest
+    env:
+      USERNAME: ${{ inputs.ACTIONS_BOT_USERNAME }}
+      EMAIL: ${{ inputs.ACTIONS_BOT_EMAIL }}
+      TFDOCS: ${{ inputs.TFDOCS }}
+      TFDOCS_VERSION: 0.16.0
+      SPHINX_VERSION: 4.3.0
+      MATERIAL_VERSION: 0.0.35
+      MYST_VERSION: 0.15.2
+      GROUNDWORK_VERSION: 1.1.1
+
+    steps:
+      # see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
+      - name: environment
+        run: echo "PATH=$(pwd)/bin:$PATH" >> $GITHUB_ENV
+
+      # TODO: how to cache system dependencies?
+      # see: https://github.com/cli/cli/issues/6175#issuecomment-1238477714
+      - name: system dependencies
+        run: |
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          
+          sudo apt-get update -y 
+          sudo apt-get install -y \
+                                  python3-dev \
+                                  python3-venv \
+                                  python3-pip \
+                                  build-essential
+
+      # see: https://github.com/actions/checkout
+      - name: checkout
+        uses: actions/checkout@v2
+
+      # see: https://github.com/actions/cache
+      - name: tfdocs cache
+        if: ${{ inputs.TFDOCS }} == 'true'
+        id: cache_tfdocs
+        uses: actions/cache@v3
+        with:
+          path: bin/terraform-docs
+          key: ${{ github.repository }}-${{ env.TFDOCS_VERSION }}-tfdocs
+
+      - name: sphinx cache
+        id: cache_sphinx
+        uses: actions/cache@v3
+        with:
+          path: ~/.venv
+          key: ${{ github.repository }}-${{ env.SPHINX_VERSION }}-sphinx-venv-invalidate
+
+      - name: doc dependencies
+        if: steps.cache_sphinx.outputs.cache-hit != 'true'
+        run: |
+          python3 -m venv ~/.venv
+          source ~/.venv/bin/activate
+          pip3 install sphinx==${SPHINX_VERSION} \
+                        sphinx-material==${MATERIAL_VERSION} \
+                        myst-parser==${MYST_VERSION} \
+                        groundwork-sphinx-theme==${GROUNDWORK_VERSION}
+
+      - name: job dependencies
+        if: steps.cache_tfdocs.outputs.cache-hit != 'true' && ${{ inputs.TFDOCS }} == 'true'
+        run: |
+          curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/v${TFDOCS_VERSION}/terraform-docs-v${TFDOCS_VERSION}-$(uname)-amd64.tar.gz
+          tar -xzf terraform-docs.tar.gz
+          chmod +x terraform-docs
+          if [ ! -d "bin" ]; then
+            mkdir bin
+          fi
+          mv terraform-docs bin
+
+      # see: https://terraform-docs.io/user-guide/configuration/
+      - name: build docs
+        if: ${{ inputs.TFDOCS }} == 'true'
+        run: |
+          if [ -f ".terraform-docs.yml" ]
+          then
+            terraform-docs --config .terraform-docs.yml .
+          fi
+
+      # see: https://www.sphinx-doc.org/en/master/
+      - name: build html
+        run: |
+          source ~/.venv/bin/activate
+          cd docs
+          make html
+          cd ..
+          
+      - name: copy html to tmp
+        run: |
+          mkdir $(pwd)/../tmp
+          cp -ap ./docs/build/html/. $(pwd)/../tmp/
+
+      # note: disjunction of command with true to avoid possible failures
+      - name: commit
+        run: |
+          git config --global user.name $USERNAME
+          git config --global user.email $EMAIL
+          git add .
+          git stash
+          git fetch
+          git checkout gh-pages
+          cp -ap $(pwd)/../tmp/. ./
+          git add .
+          git commit -m "$(echo $(date)) Auto-Documentation Bot: Beep Boop" || true
+          git push --set-upstream origin gh-pages || true
