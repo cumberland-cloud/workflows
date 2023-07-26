@@ -87,4 +87,4 @@ jobs:
       - name: scan
         run: |
           tfsec \
-            --config-file .terraform-security.yml
+            --config-file .tfsec.yml
