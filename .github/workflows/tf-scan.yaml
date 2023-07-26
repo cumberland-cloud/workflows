@@ -87,4 +87,4 @@ jobs:
       - name: scan
         run: |
           tfsec \
-            --config-file .tfsec.yml
+            --config-file .tfsec.yaml
