@@ -47,6 +47,7 @@ jobs:
         run: |
           source .venv/bin/activate
           checkov --directory . \
+            --download-external-modules True \
             --skip-check CKV2_GHA_1
             
 
