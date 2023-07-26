@@ -8,7 +8,7 @@ jobs:
     name: terraform lint
     runs-on: ubuntu-latest
     env:
-      TFLINT_VERSION: v0.41.0
+      TFLINT_VERSION: v0.47.0
 
     steps:
       # see: 
@@ -26,20 +26,19 @@ jobs:
         uses: actions/checkout@v2
 
       # see: https://github.com/actions/cache
-      # NOTE: cache is keyed around `provider.tf` file. See README.md for more information.
       - name: tflint cache
         id: cache_tflint
         uses: actions/cache@v3
         with:
           path: bin
-          key: ${{ github.repository }}-${{ hashFiles('provider.tf')}}-tflint
+          key: ${{ github.repository }}-${{ env.TFLINT_VERSION }}-tflint
       
       - name: plugin cache
         id: cache_tflint_plugins
         uses: actions/cache@v3
         with:
           path: plugins
-          key: ${{ github.repository }}-${{ hashFiles('provider.tf')}}-tflint-plugins
+          key: ${{ github.repository }}-${{ hashFiles('.tflint.hcl')}}-tflint-plugins
 
       - name: dependencies
         if: steps.cache_tflint_plugins.outputs.cache-hit != 'true'
