@@ -57,7 +57,8 @@ jobs:
           fi 
           tflint \
             --init \
-            --module
+            --module \
+            --recursive
 
       - name: lint
         run: |
