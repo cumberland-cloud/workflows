@@ -108,7 +108,7 @@ jobs:
       - name: build docs
         if: ${{ inputs.TFDOCS }} == 'true'
         run: |
-          if [ -f ".tf-docs.yml" ]
+          if [ -f ".tfdocs.yml" ]
           then
             terraform-docs --config .tfdocs.yml .
           fi
