@@ -33,6 +33,8 @@ jobs:
   sphinx_gh_pages:
     name: github pages
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     env:
       USERNAME: ${{ inputs.ACTIONS_BOT_USERNAME }}
       EMAIL: ${{ inputs.ACTIONS_BOT_EMAIL }}
