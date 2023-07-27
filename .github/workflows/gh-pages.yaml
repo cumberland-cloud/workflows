@@ -108,9 +108,9 @@ jobs:
       - name: build docs
         if: ${{ inputs.TFDOCS }} == 'true'
         run: |
-          if [ -f ".tfdocs.yml" ]
+          if [ -f ".tfdocs.yaml" ]
           then
-            terraform-docs --config .tfdocs.yml .
+            terraform-docs --config .tfdocs.yaml .
           fi
 
       # see: https://www.sphinx-doc.org/en/master/
