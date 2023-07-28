@@ -67,14 +67,14 @@ jobs:
         id: cache_terraform
         uses: actions/cache@v3
         with:
-          path: bin/terraform
+          path: ~/bin/terraform
           key: ${{ github.repository }}-${{ env.TERRAFORM_VERSION )}}-tf
 
       - name: plugin cache
         id: cache_terraform_plugins
         uses: actions/cache@v3
         with:
-          path: plugins
+          path: ~/plugins
           key: ${{ github.repository }}-${{ hashFiles('versions.tf')}}-tf-plugins
 
       # NOTE: manual install to make caching easier
