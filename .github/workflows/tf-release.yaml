@@ -73,7 +73,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/bin/terraform
-          key: ${{ github.repository }}-${{ env.TERRAFORM_VERSION )}}-tf
+          key: ${{ github.repository }}-${{ env.TF_VERSION }}-tf
 
       - name: plugin cache
         id: cache_terraform_plugins
