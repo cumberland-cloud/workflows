@@ -17,16 +17,14 @@ on:
 jobs:
   Release:
     if: ${{ github.event_name == 'pull_request' }}
-    uses: chinchalinchin/github-workflows/.github/workflows/tf-release.yml@main
-    with:
-      MODULES: "vpc,cluster,peristence"
+    uses: cumberland-cloud/workflows/.github/workflows/tf-release.yml@main
     secrets:
       AWS_IAM_USER: ${{ secrets.AWS_IAM_USER }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       # NOTE: Uncomment this line if your workflow requires secret Terraform variables! 
-      #         See documentation /docs/source/QUICKSTART.md#TF_ENV for more info.
+      #         See documentation /docs/source/TERRAFORM.mde for more info.
       # TF_ENV: ${{ secrets.TF_ENV }}
 
   Scan:

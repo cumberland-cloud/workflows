@@ -17,7 +17,7 @@ on:
 jobs:
   Push:
     if: github.event_name == 'pull_request'
-    uses: chinchalinchin/github-workflows/.github/workflows/ecr-push.yml@main
+    uses: cumberland-cloud/workflows/.github/workflows/ecr-push.yml@main
     with:
       IMAGE_NAME: "my-image"
       ## NOTE: If you are using immutable tags, SHA will always be unique.
@@ -36,6 +36,3 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-
-  Docs:
-    uses: chinchalinchin/github-workflows/.github/workflows/gh-pages.yml@main
