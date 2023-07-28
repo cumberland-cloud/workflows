@@ -1,6 +1,9 @@
 # actions-workflows
 
 This repository contains a set of reusable **GitHub Action** workflows and configuration files for setting up **Terraform** _Continuous Integration_. 
+
+[![documentation](https://github.com/cumberland-cloud/workflows/actions/workflows/action.yaml/badge.svg)](https://github.com/cumberland-cloud/workflows/actions/workflows/action.yaml)
+
 ## Terraform Pipeline
 
 ### Stages
