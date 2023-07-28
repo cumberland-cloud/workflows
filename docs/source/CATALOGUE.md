@@ -84,8 +84,14 @@ This workflow runs `terraform plan`, `terraform apply` and `terraform destroy` i
 
 However, do not add secret information to this file, as it gets committed. Instead, use a [Github Secret](https://docs.github.com/en/rest/actions/secrets). See [TF_ENV](./QUICKSTART.md#tf_env) for more information and an example of setting up a new secret.
 
+### Inputs
+
+| Name | Description | Type | Required | 
+| ---- | ----------- | ---- | -------- |
+| TF_STATE_KEY | Path, including filename, of the Terraform state file to use. | String | Yes |
+
 ### Secrets
 
 | Name | Description | Type | Required | 
 | ---- | ----------- | ---- | -------- |
-| TF_ENV | JSON string with key-value pairs for TF_VAR_* environment variables | String | No |
+| TF_ENV | JSON string with key-value pairs representing TF_VAR_* environment variables. | String | No |

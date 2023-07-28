@@ -10,6 +10,25 @@ TODO
 
 This workflow will run `terraform` directly and generate a [plan file](https://developer.hashicorp.com/terraform/cli/commands/plan) and then apply it.
 
+### Backend Configuration
+
+The _tf-release_ workflow assumes the **Terraform** backend has been configured similar to the following example,
+
+```tcl
+terraform {
+    backend "s3" {
+        bucket          = "cumberland-cloud-gateway-terraform-state"
+        dynamodb_table  = "cumberland-cloud-gateway-terraform-lock"
+        encrypted       = true
+        region          = "us-east-1"
+    }
+}
+```
+
+In other words, the backend must use S3; furthermore, the **Github** workflow **IAM** account must have read/write access to the state bucket.
+
+Notice, in addition, the key has not been specified. The _tf-release_ workflow will pass the value of the state key through `${{ inputs.TF_STATE_KEY }}` [Github Action variable](https://docs.github.com/en/actions/using-workflows/reusing-workflows#passing-inputs-and-secrets-to-a-reusable-workflow) into the `-backend-config="key=${TF_STATE_KEY}"` argument of `terraform init`. For this reason, the input variable `TF_STATE_KEY` _is required and does not have a default value_.
+
 ### IAM Permissions
 
 The [cumberland-cloud org](https://github.com/cumberland-cloud) has an IAM user account with sufficient permissions attached to it that allows it to deploy into the **AWS** cloud. The credentials are stored in organization level secrets and are accessible from every repository under its umbrella. If using the workflow outside of the [cumberland-cloud org](https://github.com/cumberland-cloud), you will need to create [Github repository secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) for the [AWS CLI credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html).
