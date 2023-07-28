@@ -9,4 +9,3 @@ on:
 jobs:
     github_pages:
       uses: cumberland-cloud/workflows/.github/workflows/gh-pages.yaml@master
-
