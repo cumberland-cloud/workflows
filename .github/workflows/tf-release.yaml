@@ -7,7 +7,7 @@ on:
     inputs: 
       TF_STATE_KEY:
         description: Path, including filename, of the Terraform state file to use.
-        required: true
+        required: false
         type: string
     # see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onworkflow_callsecrets
     secrets:
@@ -28,7 +28,6 @@ on:
         description: JSON string with key-value pairs for TF_VAR environment variables.
         
 jobs:
-
   release:
     name: terraform release
     runs-on: ubuntu-latest
@@ -96,8 +95,8 @@ jobs:
           fi
           mv terraform bin/
 
-      - name: plugins
-        if: steps.cache_terraform_plugins.cache-hit != 'true'
+      - name: configure backend and initialize plugins
+        if: steps.cache_terraform_plugins.cache-hit != 'true' && github.event.inputs.TF_STATE_KEY != ''
         run: |
           if [ ! -d "plugins" ]; then
             mkdir plugins
@@ -106,6 +105,15 @@ jobs:
             -input=false \
             -backend-config="key=${TF_STATE_KEY}"
 
+      - name: initialize plugins
+        if: steps.cache_terraform_plugins.cache-hit != 'true' && github.event.inputs.TF_STATE_KEY == ''
+        run: |
+          if [ ! -d "plugins" ]; then
+            mkdir plugins
+          fi 
+          terraform init \
+            -input=false
+            
       - name: plan 
         run: |
           terraform plan \
