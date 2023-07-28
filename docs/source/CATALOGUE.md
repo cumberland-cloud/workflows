@@ -1,10 +1,10 @@
 # Action Catalogue
 
-These reusable workflows can be composed in any order that fits your project. See the sample action file for [maintaining a Docker image](https://github.boozallencsn.com/AutomationLibrary/actions-workflows/blob/main/.sample.action.ecr.yml), [updating a Lambda function](https://github.boozallencsn.com/AutomationLibrary/actions-workflows/blob/main/.sample.action.lambda.yml) or [maintaining a Terraform project](https://github.boozallencsn.com/AutomationLibrary/actions-workflows/blob/main/.sample.action.terraform.yml) for examples of how to compose these workflows.
+These reusable workflows can be composed in any order that fits your project. See the sample action file for [pushing a Docker image](https://github.com/cumberland-cloud/workflows/blob/master/.github/.sample.action.ecr.yaml), [updating a Lambda function](https://github.com/cumberland-cloud/workflows/blob/master/.github/.sample.action.lambda.yaml) or [maintaining a Terraform project](https://github.com/cumberland-cloud/workflows/blob/master/.github/.sample.action.terraform.yaml) for examples of how to compose these workflows.
 
 ## Secrets
 
-All reusable workflows have the following secrets injected in their execution environment,
+All reusable workflows, with the exception of the _gh-pages_ job, have the following secrets injected in their execution environment,
 
 | Name | Description | 
 | ---- | ----------- |
@@ -60,6 +60,10 @@ This workflow performs an update on existing **Lambda** function using an **ECR*
 | IMAGE_NAME | Name of the ECR repo where the function's image is hosted | string | true |
 | IMAGE_TAG | Tag in the ECR to deploy | string | true |
 
+## py-lint
+
+TODO
+
 ## tf-lint
 
 [Source](https://github.com/chinchalinchin/github-workflows/blob/main/.github/workflows/tf-lint.yml)
@@ -80,9 +84,8 @@ This workflow runs `terraform plan`, `terraform apply` and `terraform destroy` i
 
 However, do not add secret information to this file, as it gets committed. Instead, use a [Github Secret](https://docs.github.com/en/rest/actions/secrets). See [TF_ENV](./QUICKSTART.md#tf_env) for more information and an example of setting up a new secret.
 
-### Inputs
+### Secrets
 
 | Name | Description | Type | Required | 
 | ---- | ----------- | ---- | -------- |
-| MODULES | Comma separated list of Terraform moduels that will be deployed. Modules will be deployedi n the order in which they are listed. | string | true |
-
+| TF_ENV | JSON string with key-value pairs for TF_VAR_* environment variables | String | No |

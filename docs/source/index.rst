@@ -1,5 +1,5 @@
-Welcome to github-workflows's documentation!
-============================================
+Welcome to cumberland-cloud/workflows's documentation!
+======================================================
 
 .. toctree::
    :maxdepth: 2
