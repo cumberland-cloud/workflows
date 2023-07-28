@@ -1,5 +1,5 @@
-Welcome to cumberland-cloud/workflows's documentation!
-======================================================
+Welcome to cumberland-cloud/workflows' documentation!
+=====================================================
 
 .. toctree::
    :maxdepth: 2
