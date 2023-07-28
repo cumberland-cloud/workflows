@@ -257,7 +257,9 @@
         </li>
         <li class="md-nav__item"><a href="#tf-release" class="md-nav__link">tf-release</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#id3" class="md-nav__link">Secrets</a>
+        <li class="md-nav__item"><a href="#id3" class="md-nav__link">Inputs</a>
+        </li>
+        <li class="md-nav__item"><a href="#id4" class="md-nav__link">Secrets</a>
         </li></ul>
             </nav>
         </li></ul>
@@ -435,7 +437,26 @@
 <p>This workflow runs <code class="docutils literal notranslate"><span class="pre">terraform</span> <span class="pre">plan</span></code>, <code class="docutils literal notranslate"><span class="pre">terraform</span> <span class="pre">apply</span></code> and <code class="docutils literal notranslate"><span class="pre">terraform</span> <span class="pre">destroy</span></code> in a sequence of steps. Each step is dependent on the success of the previous step. Each step ingests the <em>.tfvars</em> file found in the repository root directory. See <a class="reference external" href="https://developer.hashicorp.com/terraform/language/values/variables#variable-definitions-tfvars-files">documentation</a> for more information on setting up this file.</p>
 <p>However, do not add secret information to this file, as it gets committed. Instead, use a <a class="reference external" href="https://docs.github.com/en/rest/actions/secrets">Github Secret</a>. See <a class="reference external" href="./QUICKSTART.md#tf_env">TF_ENV</a> for more information and an example of setting up a new secret.</p>
 <section id="id3">
-<h3 id="id3">Secrets<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<h3 id="id3">Inputs<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<table>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>TF_STATE_KEY</p></td>
+<td><p>Path, including filename, of the Terraform state file to use.</p></td>
+<td><p>String</p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id4">
+<h3 id="id4">Secrets<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <table>
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
@@ -446,7 +467,7 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>TF_ENV</p></td>
-<td><p>JSON string with key-value pairs for TF_VAR_* environment variables</p></td>
+<td><p>JSON string with key-value pairs representing TF_VAR_* environment variables.</p></td>
 <td><p>String</p></td>
 <td><p>No</p></td>
 </tr>

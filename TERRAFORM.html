@@ -234,6 +234,8 @@
         </li>
         <li class="md-nav__item"><a href="#tf-release" class="md-nav__link">tf-release</a><nav class="md-nav">
               <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#backend-configuration" class="md-nav__link">Backend Configuration</a>
+        </li>
         <li class="md-nav__item"><a href="#iam-permissions" class="md-nav__link">IAM Permissions</a>
         </li>
         <li class="md-nav__item"><a href="#tf-env" class="md-nav__link">TF_ENV</a>
@@ -268,6 +270,22 @@
 <section id="tf-release">
 <h2 id="tf-release">tf-release<a class="headerlink" href="#tf-release" title="Permalink to this headline">¶</a></h2>
 <p>This workflow will run <code class="docutils literal notranslate"><span class="pre">terraform</span></code> directly and generate a <a class="reference external" href="https://developer.hashicorp.com/terraform/cli/commands/plan">plan file</a> and then apply it.</p>
+<section id="backend-configuration">
+<h3 id="backend-configuration">Backend Configuration<a class="headerlink" href="#backend-configuration" title="Permalink to this headline">¶</a></h3>
+<p>The <em>tf-release</em> workflow assumes the <strong>Terraform</strong> backend has been configured similar to the following example,</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span>terraform {
+    backend "s3" {
+        bucket          = "cumberland-cloud-gateway-terraform-state"
+        dynamodb_table  = "cumberland-cloud-gateway-terraform-lock"
+        encrypted       = true
+        region          = "us-east-1"
+    }
+}
+</pre></div>
+</div>
+<p>In other words, the backend must use S3; furthermore, the <strong>Github</strong> workflow <strong>IAM</strong> account must have read/write access to the state bucket.</p>
+<p>Notice, in addition, the key has not been specified. The <em>tf-release</em> workflow will pass the value of the state key through <code class="docutils literal notranslate"><span class="pre">${{</span> <span class="pre">inputs.TF_STATE_KEY</span> <span class="pre">}}</span></code> <a class="reference external" href="https://docs.github.com/en/actions/using-workflows/reusing-workflows#passing-inputs-and-secrets-to-a-reusable-workflow">Github Action variable</a> into the <code class="docutils literal notranslate"><span class="pre">-backend-config="key=${TF_STATE_KEY}"</span></code> argument of <code class="docutils literal notranslate"><span class="pre">terraform</span> <span class="pre">init</span></code>. For this reason, the input variable <code class="docutils literal notranslate"><span class="pre">TF_STATE_KEY</span></code> <em>is required and does not have a default value</em>.</p>
+</section>
 <section id="iam-permissions">
 <h3 id="iam-permissions">IAM Permissions<a class="headerlink" href="#iam-permissions" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference external" href="https://github.com/cumberland-cloud">cumberland-cloud org</a> has an IAM user account with sufficient permissions attached to it that allows it to deploy into the <strong>AWS</strong> cloud. The credentials are stored in organization level secrets and are accessible from every repository under its umbrella. If using the workflow outside of the <a class="reference external" href="https://github.com/cumberland-cloud">cumberland-cloud org</a>, you will need to create <a class="reference external" href="https://docs.github.com/en/actions/security-guides/encrypted-secrets">Github repository secrets</a> for the <a class="reference external" href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html">AWS CLI credentials</a>.</p>
