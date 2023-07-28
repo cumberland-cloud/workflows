@@ -80,9 +80,9 @@ This workflow runs [tf-sec](https://github.com/aquasecurity/tfsec) and [checkov]
 
 [Source](https://github.com/chinchalinchin/github-workflows/blob/main/.github/workflows/tf-release.yml)
 
-This workflow runs `terraform plan`, `terraform apply` and `terraform destroy` in a sequence of steps. Each step is dependent on the success of the previous step. Each step ingests the _.tfvars_ file found in the repository root directory. See [documentation](https://developer.hashicorp.com/terraform/language/values/variables#variable-definitions-tfvars-files) for more information on setting up this file.
+This workflow runs `terraform plan` and `terraform apply` in a succession. Each step is dependent on the success of the previous step. The _terraform.tfvars_ file found in the repository root directory will be passed into each of these commands to provide parameter values. See [documentation](https://developer.hashicorp.com/terraform/language/values/variables#variable-definitions-tfvars-files) for more information on setting up this file.
 
-However, do not add secret information to this file, as it gets committed. Instead, use a [Github Secret](https://docs.github.com/en/rest/actions/secrets). See [TF_ENV](./QUICKSTART.md#tf_env) for more information and an example of setting up a new secret.
+However, do not add secret information to this file, as it gets committed. Instead, use a [Github Secret](https://docs.github.com/en/rest/actions/secrets). In addition to the _terraform.tfvars_ file, parameter values can also be specified through secret environment variables. See [TF_ENV](./TERRAFORM.md#tf_env) for more information and an example of setting up a new secret.
 
 ### Inputs
 

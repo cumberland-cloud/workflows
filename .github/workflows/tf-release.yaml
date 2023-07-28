@@ -6,7 +6,7 @@ on:
     # see: https://docs.github.com/en/actions/using-workflows/reusing-workflows#passing-inputs-and-secrets-to-a-reusable-workflow
     inputs: 
       TF_STATE_KEY:
-        description: Path, including filename, of the Terraform state file to use.
+        description: Path, including filename, of the Terraform state file to use. If not specified, Terraform will be initialized without any values being passed into the backend configuration.
         required: false
         type: string
     # see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onworkflow_callsecrets
@@ -113,7 +113,7 @@ jobs:
           fi 
           terraform init \
             -input=false
-            
+
       - name: plan 
         run: |
           terraform plan \
