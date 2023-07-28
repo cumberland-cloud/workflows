@@ -8,5 +8,4 @@ on:
 
 jobs:
     github_pages:
-      uses: chinchalinchin/github-workflows/.github/workflows/gh-pages.yml@main
-
+      uses: cumberland-cloud/workflows/.github/workflows/gh-pages.yaml@master

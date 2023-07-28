@@ -16,7 +16,7 @@ on:
 
 jobs:
   Push:
-    uses: chinchalinchin/github-workflows/.github/workflows/ecr-push.yml@main
+    uses: cumberland-cloud/workflows/.github/workflows/ecr-push.yml@main
     with:
       IMAGE_NAME: "my-image"
       IMAGE_TAG: $${{ github.sha }}
@@ -28,7 +28,7 @@ jobs:
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
   Update:
-    uses: chinchalinchin/github-workflows/.github/workflows/lambda-update.yml@main
+    uses: cumberland-cloud/workflows/.github/workflows/lambda-update.yml@main
     with:
       FUNCTION_NAME: "my-function"
       IMAGE_NAME: "my-image"
@@ -41,5 +41,5 @@ jobs:
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
   Docs:
-    uses: chinchalinchin/github-workflows/.github/workflows/gh-pages.yml@main
+    uses: cumberland-cloud/workflows/.github/workflows/gh-pages.yml@main
 

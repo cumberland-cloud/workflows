@@ -3,11 +3,6 @@ name: Terraform Release
 # https://docs.github.com/en/actions/using-workflows/reusing-workflows#overview
 on: 
   workflow_call:
-    inputs: 
-      MODULES:
-        type: string
-        required: true
-        description: Comma separated list of Terraform modules that will be deployed. Modules will be deployed in the order in which they are passed.
     # see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onworkflow_callsecrets
     secrets:
       AWS_IAM_USER:
@@ -24,13 +19,15 @@ on:
         description: Default region of the AWS service account
       TF_ENV:
         required: false
-        description: JSON with key-value pairs for TF_VAR environment variables.
+        description: JSON string with key-value pairs for TF_VAR environment variables.
         
 jobs:
 
   release:
     name: terraform release
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     env:
       # see:
         # {{ secrets }} context: https://docs.github.com/en/actions/learn-github-actions/contexts#secrets-context
@@ -40,10 +37,9 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      MODULES: ${{ inputs.MODULES }}
       TF_ENV: ${{ secrets.TF_ENV }}
-      TERRAFORM_STATE_KEY: ${{ github.repository }}/${{ github.ref_name }}/terraform.tfstate
-      TERRAFORM_VERSION: 1.3.0
+      TF_STATE_KEY: gateway/terraform.tfstate
+      TF_VERSION: 1.5.0
 
     steps:
       - name: system dependencies
@@ -64,24 +60,22 @@ jobs:
 
       # see: https://github.com/actions/checkout
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # see: https://github.com/actions/cache
-      # NOTE: cache is keyed around `provider.tf` file. See README for more information.
       - name: terraform cache
         id: cache_terraform
         uses: actions/cache@v3
         with:
-          path: bin/terraform
-          key: ${{ github.repository }}-${{ hashFiles('provider.tf')}}-tf
+          path: ~/bin/terraform
+          key: ${{ github.repository }}-${{ env.TERRAFORM_VERSION )}}-tf
 
       - name: plugin cache
         id: cache_terraform_plugins
         uses: actions/cache@v3
         with:
-          path: plugins
-          # TODO: invalidating cache, remove `invalid` after testing...
-          key: ${{ github.repository }}-${{ hashFiles('provider.tf')}}-tf-plugins-invalid
+          path: ~/plugins
+          key: ${{ github.repository }}-${{ hashFiles('versions.tf')}}-tf-plugins
 
       # NOTE: manual install to make caching easier
       - name: job dependencies
@@ -89,7 +83,7 @@ jobs:
         run: |
           wget \
             -O tf.zip \
-            https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+            https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
           unzip tf.zip
           if [ ! -d "bin" ]; then
             mkdir bin
@@ -102,47 +96,30 @@ jobs:
           if [ ! -d "plugins" ]; then
             mkdir plugins
           fi 
-          echo "Using $TERRAFORM_STATE_KEY to initialize Terraform..."
           terraform init \
             -input=false \
             -backend-config="key=${TERRAFORM_STATE_KEY}"
 
       - name: plan 
         run: |
-          IFS=', ' read -r -a M_ARRAY <<< "$MODULES"
-          for element in "${M_ARRAY[@]}"
-          do
-            echo "Planning $element module"
-            terraform plan \
-              -var-file .tfvars \
-              -target="module.${element}" \
-              -input=false 
-          done
-            
-      # - name: apply
-      #   if: github.event_name == 'pull_request'
-      #   run: |
-      #     IFS=', ' read -r -a M_ARRAY <<< "$MODULES"
-      #     for element in "${M_ARRAY[@]}"
-      #     do
-      #       echo "Deploying $element module"
-      #       terraform apply \
-      #         -var-file .tfvars \
-      #         -input=false \
-      #         -target="module.${element}" \
-      #         -auto-approve 
-      #     done
-      
-      # - name: destroy
-      #   if: github.event_name == 'pull_request'
-      #   run: |
-      #     IFS=', ' read -r -a M_ARRAY <<< "$MODULES"
-      #     for element in "${M_ARRAY[@]}"
-      #     do
-      #       echo "Destroying $element module"
-      #       terraform destroy \
-      #         -var-file .tfvars \
-      #         -input=false \
-      #         -target="module.${element}" \
-      #         -auto-approve
-      #     done
+          terraform plan \
+            -no-color \
+            -input=false \
+            -out=$(pwd)/plan
+          
+      - uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: chinchalinchin
+          minimum-approvals: 1
+          issue-title: "Deploying to the AWS cloud"
+          issue-body: "Please approve or deny the deployment."
+
+      - name: apply
+        if: github.event_name == 'pull_request'
+        run: |
+          terraform apply \
+            -no-color \
+            -input=false \
+            -auto-approve \
+            $(pwd)/plan

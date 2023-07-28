@@ -23,21 +23,21 @@ jobs:
 
       # see: https://github.com/actions/checkout
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # see: https://github.com/actions/cache
       - name: tflint cache
         id: cache_tflint
         uses: actions/cache@v3
         with:
-          path: bin
+          path: ~/bin
           key: ${{ github.repository }}-${{ env.TFLINT_VERSION }}-tflint
       
       - name: plugin cache
         id: cache_tflint_plugins
         uses: actions/cache@v3
         with:
-          path: plugins
+          path: ~/plugins
           key: ${{ github.repository }}-${{ hashFiles('.tflint.hcl')}}-tflint-plugins
 
       - name: dependencies

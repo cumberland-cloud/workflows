@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 # NOTE: Add your project's information here.
-project = 'Reusable Github Action Workflows'
+project = 'Cumberland Cloud'
 copyright = '2022'
 author = 'Grant Moore'
 release = '1.0.0'
@@ -60,22 +60,22 @@ html_theme = 'sphinx_material'
 html_theme_options = {
 
     # Set the name of the project to appear in the navigation.
-    'nav_title': 'Reusable Github Actions',
+    'nav_title': 'Workflows',
 
     # Set you GA account ID to enable tracking
     'google_analytics_account': 'UA-XXXXX',
 
     # Specify a base_url used to generate sitemap.xml. If not
     # specified, then no sitemap will be built.
-    'base_url': 'https://chinchalinchin.github.io/github-workflows/',
+    'base_url': '',
 
     # Set the color and the accent color
     'color_primary': 'blue',
     'color_accent': 'light-blue',
 
     # Set the repo location to get a badge with stats
-    'repo_url': 'https://github.com/chinchalinchin/github-workflows',
-    'repo_name': 'github-workflows',
+    'repo_url': 'https://github.com/cumberland-cloud/workflows',
+    'repo_name': 'workflows',
 
     # Visible levels of the global TOC; -1 means unlimited
     'globaltoc_depth': 2,

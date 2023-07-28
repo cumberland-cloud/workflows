@@ -10,7 +10,7 @@ jobs:
     steps:
       # see: https://github.com/actions/checkout
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         
       # TODO: how to cache system dependencies?
       # see: https://github.com/cli/cli/issues/6175#issuecomment-1238477714
@@ -34,7 +34,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .venv
-          key: ${{ github.repository }}-${{ hashFiles('provider.tf')}}-checkov-venv
+          key: ${{ github.repository }}-checkov-venv
 
       - name: job dependencies
         if: steps.cache_checkov.outputs.cache-hit != 'true'
@@ -65,14 +65,14 @@ jobs:
         
       # https://github.com/actions/checkout
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # see: https://github.com/actions/cache
       - name: cache
         id: cache_tfsec
         uses: actions/cache@v3
         with:
-          path: bin
+          path: ~/bin
           key: ${{ github.repository }}-tfsec
 
       - name: dependencies
