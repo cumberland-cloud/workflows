@@ -54,10 +54,10 @@ jobs:
           if [ ! -d "plugins" ]; then
             mkdir plugins
           fi 
+          
           tflint \
             --init \
-            --module \
-            --recursive
+            --config $(pwd)/.tflint.hcl
 
       - name: lint
         run: |
