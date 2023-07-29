@@ -12,7 +12,7 @@ on:
   workflow_call:
     # see: https://docs.github.com/en/actions/using-workflows/reusing-workflows#passing-inputs-and-secrets-to-a-reusable-workflow
     inputs:
-      TFDOCS:
+      TF_DOCS:
         required: false
         description: Flag to run tf-docs before sphinx to generate markdown. Note, it is assumed the .terraform-docs.yml is configured to output markdown into the Sphinx /source/ directory and that no further configuration is required.
         default: false
