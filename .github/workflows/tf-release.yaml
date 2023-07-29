@@ -62,7 +62,7 @@ jobs:
         # TF_ENV unpacking: https://stackoverflow.com/questions/48512914/exporting-json-to-environment-variables
       - name: environment
         run: |
-          echo "PATH=${GITHUB_WORKSPACE}bin:$PATH" >> $GITHUB_ENV
+          echo "PATH=${GITHUB_WORKSPACE}/bin:$PATH" >> $GITHUB_ENV
           echo "TF_PLUGIN_CACHE_DIR=${GITHUB_WORKSPACE}/plugins" >> $GITHUB_ENV
           for s in $(echo $TF_ENV | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" ); do
               echo "$s" >> $GITHUB_ENV
@@ -77,14 +77,14 @@ jobs:
         id: cache_terraform
         uses: actions/cache@v3
         with:
-          path: ${{ env.GITHUB_WORKSPACE }}/bin
+          path: bin
           key: ${{ github.repository }}-${{ env.TF_VERSION }}-tf
 
       - name: plugin cache
         id: cache_terraform_plugins
         uses: actions/cache@v3
         with:
-          path: ${{ env.GITHUB_WORKSPACE }}/plugins
+          path: plugins
           key: ${{ github.repository }}-${{ hashFiles('terraform.tf')}}-tf-plugins
 
       # NOTE: manual install to make caching easier
@@ -98,7 +98,7 @@ jobs:
           if [ ! -d "${GITHUB_WORKSPACE}/bin" ]; then
             mkdir ${GITHUB_WORKSPACE}/bin
           fi
-          mv terraform bin/
+          mv terraform ${GITHUB_WORKSPACE}/bin/
 
       - name: configure backend and initialize plugins
         if: steps.cache_terraform_plugins.cache-hit != 'true' && github.event.inputs.TF_STATE_KEY != ''

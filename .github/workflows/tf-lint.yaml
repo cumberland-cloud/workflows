@@ -17,9 +17,9 @@ jobs:
         # TFLINT_PLUGIN_DIR: https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md
       - name: environment
         run: |
-          echo "PATH=${GITHUB_WORKSPACE}/bin:$PATH" >> $GITHUB_ENV
-          echo "TFLINT_INSTALL_PATH=${GITHUB_WORKSPACE}/bin" >> $GITHUB_ENV
-          echo "TFLINT_PLUGIN_DIR=${GITHUB_WORKSPACE}/plugins" >> $GITHUB_ENV
+          echo "PATH=$(pwd)/bin:$PATH" >> $GITHUB_ENV
+          echo "TFLINT_INSTALL_PATH=$(pwd)/bin" >> $GITHUB_ENV
+          echo "TFLINT_PLUGIN_DIR=$(pwd)/plugins" >> $GITHUB_ENV
 
       # see: https://github.com/actions/checkout
       - name: checkout
@@ -30,21 +30,21 @@ jobs:
         id: cache_tflint
         uses: actions/cache@v3
         with:
-          path: ${{ env.GITHUB_WORKSPACE }}/bin
-          key: ${{ github.repository }}-${{ env.TFLINT_VERSION }}-tflint
+          path: bin
+          key: ${{ github.repository }}-${{ env.TFLINT_VERSION }}-tf-lint
       
       - name: plugin cache
         id: cache_tflint_plugins
         uses: actions/cache@v3
         with:
-          path: ${{ env.GITHUB_WORKSPACE }}/plugins
-          key: ${{ github.repository }}-${{ hashFiles('.tflint.hcl')}}-tflint-plugins
+          path: plugins
+          key: ${{ github.repository }}-${{ hashFiles('.tflint.hcl')}}-tf-lint-plugins
 
       - name: dependencies
         if: steps.cache_tflint_plugins.outputs.cache-hit != 'true'
         run: |
           if [ ! -d "${GITHUB_WORKSPACE}/bin" ]; then
-            mkdir bin
+            mkdir ${GITHUB_WORKSPACE}/bin
           fi
           curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 
@@ -52,12 +52,12 @@ jobs:
         if: steps.cache_plugins.outputs.cache-hit != 'true'
         run: |
           if [ ! -d "${GITHUB_WORKSPACE}/plugins" ]; then
-            mkdir plugins
+            mkdir ${GITHUB_WORKSPACE}/plugins
           fi 
           
           tflint \
             --init \
-            --config $(pwd)/.tflint.hcl
+            --config .tflint.hcl
 
       - name: lint
         run: |
