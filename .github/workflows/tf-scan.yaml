@@ -33,19 +33,19 @@ jobs:
         id: cache_checkov
         uses: actions/cache@v3
         with:
-          path: $${{ env.GITHUB_WORKSPACE }}/.venv
+          path: ${{ env.GITHUB_WORKSPACE }}/.venv
           key: ${{ github.repository }}-checkov-venv
 
       - name: job dependencies
         if: steps.cache_checkov.outputs.cache-hit != 'true'
         run: |
-          python3 -m venv .venv
-          source .venv/bin/activate
+          python3 -m venv ${GITHUB_WORKSPACE}/.venv
+          source ${GITHUB_WORKSPACE}/.venv/bin/activate
           pip3 install checkov
 
       - name: scan
         run: |
-          source .venv/bin/activate
+          source ${GITHUB_WORKSPACE}/.venv/bin/activate
           checkov --directory . \
             --download-external-modules True \
             --skip-check CKV2_GHA_1
@@ -60,8 +60,8 @@ jobs:
         # TFSEC_INSTALL_PATH: https://github.com/aquasecurity/tfsec/blob/da18cf5eeb62a9120dcae18aa034e63f2a934f40/scripts/install_linux.sh#L93
       - name: environment
         run: |
-          echo "PATH=$(pwd)/bin:$PATH" >> $GITHUB_ENV
-          echo "TFSEC_INSTALL_PATH=$(pwd)/bin" >> $GITHUB_ENV
+          echo "PATH=${GITHUB_WORKSPACE}/bin:$PATH" >> $GITHUB_ENV
+          echo "TFSEC_INSTALL_PATH=${GITHUB_WORKSPACE}/bin" >> $GITHUB_ENV
         
       # https://github.com/actions/checkout
       - name: checkout
@@ -78,8 +78,8 @@ jobs:
       - name: dependencies
         if: steps.cache_tfsec.outputs.cache-hit != 'true'
         run: |
-          if [ ! -d "bin" ]; then
-            mkdir bin
+          if [ ! -d "${GITHUB_WORKSPACE}/bin" ]; then
+            mkdir ${GITHUB_WORKSPACE}/bin
           fi
           curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
 

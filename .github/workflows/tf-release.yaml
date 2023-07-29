@@ -62,8 +62,8 @@ jobs:
         # TF_ENV unpacking: https://stackoverflow.com/questions/48512914/exporting-json-to-environment-variables
       - name: environment
         run: |
-          echo "PATH=$(pwd)/bin:$PATH" >> $GITHUB_ENV
-          echo "TF_PLUGIN_CACHE_DIR=$(pwd)/plugins" >> $GITHUB_ENV
+          echo "PATH=${GITHUB_WORKSPACE}bin:$PATH" >> $GITHUB_ENV
+          echo "TF_PLUGIN_CACHE_DIR=${GITHUB_WORKSPACE}/plugins" >> $GITHUB_ENV
           for s in $(echo $TF_ENV | jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" ); do
               echo "$s" >> $GITHUB_ENV
           done
@@ -95,8 +95,8 @@ jobs:
             -O tf.zip \
             https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
           unzip tf.zip
-          if [ ! -d "bin" ]; then
-            mkdir bin
+          if [ ! -d "${GITHUB_WORKSPACE}/bin" ]; then
+            mkdir ${GITHUB_WORKSPACE}/bin
           fi
           mv terraform bin/
 
@@ -113,8 +113,8 @@ jobs:
       - name: initialize plugins
         if: steps.cache_terraform_plugins.cache-hit != 'true' && github.event.inputs.TF_STATE_KEY == ''
         run: |
-          if [ ! -d "plugins" ]; then
-            mkdir plugins
+          if [ ! -d "${GITHUB_WORKSPACE}/plugins" ]; then
+            mkdir ${GITHUB_WORKSPACE}/plugins
           fi
           terraform init \
             -input=false

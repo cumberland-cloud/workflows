@@ -17,9 +17,9 @@ jobs:
         # TFLINT_PLUGIN_DIR: https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md
       - name: environment
         run: |
-          echo "PATH=$(pwd)/bin:$PATH" >> $GITHUB_ENV
-          echo "TFLINT_INSTALL_PATH=$(pwd)/bin" >> $GITHUB_ENV
-          echo "TFLINT_PLUGIN_DIR=$(pwd)/plugins" >> $GITHUB_ENV
+          echo "PATH=${GITHUB_WORKSPACE}/bin:$PATH" >> $GITHUB_ENV
+          echo "TFLINT_INSTALL_PATH=${GITHUB_WORKSPACE}/bin" >> $GITHUB_ENV
+          echo "TFLINT_PLUGIN_DIR=${GITHUB_WORKSPACE}/plugins" >> $GITHUB_ENV
 
       # see: https://github.com/actions/checkout
       - name: checkout
@@ -43,7 +43,7 @@ jobs:
       - name: dependencies
         if: steps.cache_tflint_plugins.outputs.cache-hit != 'true'
         run: |
-          if [ ! -d "bin" ]; then
+          if [ ! -d "${GITHUB_WORKSPACE}/bin" ]; then
             mkdir bin
           fi
           curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
@@ -51,7 +51,7 @@ jobs:
       - name: plugins
         if: steps.cache_plugins.outputs.cache-hit != 'true'
         run: |
-          if [ ! -d "plugins" ]; then
+          if [ ! -d "${GITHUB_WORKSPACE}/plugins" ]; then
             mkdir plugins
           fi 
           
