@@ -115,7 +115,7 @@ jobs:
         run: |
           if [ ! -d "plugins" ]; then
             mkdir plugins
-          fi 
+          fi
           terraform init \
             -input=false
 
