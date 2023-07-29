@@ -4,7 +4,7 @@ These reusable workflows can be composed in any order that fits your project. Se
 
 ## Secrets
 
-All reusable workflows, with the exception of the _gh-pages_ job, have the following secrets injected in their execution environment,
+All reusable workflows, with the exception of the _gh-pages_, _tf-scan_ and _py-lint_ workflows, have the following secrets injected into their execution environment,
 
 | Name | Description | 
 | ---- | ----------- |
@@ -13,6 +13,26 @@ All reusable workflows, with the exception of the _gh-pages_ job, have the follo
 | AWS_ACCESS_KEY_ID | Access key ID of the pipeline AWS service account |
 | AWS_SECRET_ACCESS_KEY | Secret access key of the pipeline AWS service account |
 | AWS_DEFAULT_REGION | Default region of the pipeline AWS service account |
+
+**Note**: you must ensure all workflows that require these secrets have access to them by allowing the workflow `inherit` the secrets from the repository or organization in which they are set. See [Github Action reusable workflow documentation](https://docs.github.com/en/actions/using-workflows/reusing-workflows#passing-inputs-and-secrets-to-a-reusable-workflow). For example, in order to use the _tf-release_ workflow in a repository where the above secrets are set at the organization level, use the following configuration,
+
+```yaml
+name: terraform deploy
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  Release:
+    uses: cumberland-cloud/workflows/.github/workflows/tf-release.yaml@master
+    secrets: inherit
+    with:
+      TF_STATE_KEY: <your-state-key-name>.tfstate
+      TF_DEPLOY: true
+```
+
+See the _tf-release_ section below for more information on the other parameters nested under `with`.
 
 ## ecr-push
 
@@ -89,6 +109,8 @@ However, do not add secret information to this file, as it gets committed. Inste
 | Name | Description | Type | Required | 
 | ---- | ----------- | ---- | -------- |
 | TF_STATE_KEY | Path, including filename, of the Terraform state file to use. | String | Yes |
+| TF_APPLY | Path, including filename, of the Terraform state file to use. | String | Yes |
+
 
 ### Secrets
 
