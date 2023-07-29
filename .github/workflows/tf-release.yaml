@@ -127,7 +127,7 @@ jobs:
             -out=$(pwd)/plan
           
       - uses: trstringer/manual-approval@v1
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && ${{ inputs.TF_APPLY }}
         with:
           secret: ${{ github.TOKEN }}
           approvers: chinchalinchin
