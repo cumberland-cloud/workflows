@@ -52,16 +52,18 @@ jobs:
       # see: https://github.com/cli/cli/issues/6175#issuecomment-1238477714
       - name: system dependencies
         run: |
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |\
+            sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+            && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+            && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" |\
+              sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
           
           sudo apt-get update -y 
           sudo apt-get install -y \
-                                  python3-dev \
-                                  python3-venv \
-                                  python3-pip \
-                                  build-essential
+            python3-dev \
+            python3-venv \
+            python3-pip \
+            build-essential
 
       # see: https://github.com/actions/checkout
       - name: checkout
@@ -86,8 +88,8 @@ jobs:
       - name: doc dependencies
         if: steps.cache_sphinx.outputs.cache-hit != 'true'
         run: |
-          python3 -m venv ${GITHUB_WORKSPACE}/.venv
-          source ${GITHUB_WORKSPACE}/.venv/bin/activate
+          python3 -m venv .venv
+          source .venv/bin/activate
           pip3 install sphinx==${SPHINX_VERSION} \
                         sphinx-material==${MATERIAL_VERSION} \
                         myst-parser==${MYST_VERSION} \
@@ -99,10 +101,10 @@ jobs:
           curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/v${TFDOCS_VERSION}/terraform-docs-v${TFDOCS_VERSION}-$(uname)-amd64.tar.gz
           tar -xzf terraform-docs.tar.gz
           chmod +x terraform-docs
-          if [ ! -d "${GITHUB_WORKSPACE}/bin" ]; then
-            mkdir ${GITHUB_WORKSPACE}/bin
+          if [ ! -d "bin" ]; then
+            mkdir bin
           fi
-          mv terraform-docs ${GITHUB_WORKSPACE}/bin
+          mv terraform-docs bin
 
       # see: https://terraform-docs.io/user-guide/configuration/
       - name: build docs
@@ -116,7 +118,7 @@ jobs:
       # see: https://www.sphinx-doc.org/en/master/
       - name: build html
         run: |
-          source ${GITHUB_WORKSPACE}/.venv/bin/activate
+          source .venv/bin/activate
           cd docs
           make html
           cd ..
