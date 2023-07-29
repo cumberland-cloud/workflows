@@ -46,7 +46,7 @@ jobs:
     steps:
       # see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
       - name: environment
-        run: echo "PATH=${GITHUB_WORKSPACE}/bin:$PATH" >> $GITHUB_ENV
+        run: echo "PATH=$(pwd)/bin:$PATH" >> $GITHUB_ENV
 
       # TODO: how to cache system dependencies?
       # see: https://github.com/cli/cli/issues/6175#issuecomment-1238477714
@@ -88,8 +88,8 @@ jobs:
       - name: doc dependencies
         if: steps.cache_sphinx.outputs.cache-hit != 'true'
         run: |
-          python3 -m venv .venv
-          source .venv/bin/activate
+          python3 -m venv $(pwd)/.venv
+          source $(pwd)/.venv/bin/activate
           pip3 install sphinx==${SPHINX_VERSION} \
                         sphinx-material==${MATERIAL_VERSION} \
                         myst-parser==${MYST_VERSION} \
@@ -118,7 +118,7 @@ jobs:
       # see: https://www.sphinx-doc.org/en/master/
       - name: build html
         run: |
-          source .venv/bin/activate
+          source $(pwd)/.venv/bin/activate
           cd docs
           make html
           cd ..
