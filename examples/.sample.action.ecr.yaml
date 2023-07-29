@@ -17,7 +17,7 @@ on:
 jobs:
   Push:
     if: github.event_name == 'pull_request'
-    uses: cumberland-cloud/workflows/.github/workflows/ecr-push.yml@main
+    uses: cumberland-cloud/workflows/.github/workflows/ecr-push.yaml@main
     with:
       IMAGE_NAME: "my-image"
       ## NOTE: If you are using immutable tags, SHA will always be unique.
