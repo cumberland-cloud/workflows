@@ -71,7 +71,7 @@ jobs:
 
       # see: https://github.com/actions/cache
       - name: tfdocs cache
-        if: github.event.inputs.TFDOCS
+        if: github.event.inputs.TF_DOCS
         id: cache_tfdocs
         uses: actions/cache@v3
         with:
@@ -96,7 +96,7 @@ jobs:
                         groundwork-sphinx-theme==${GROUNDWORK_VERSION}
 
       - name: job dependencies
-        if: steps.cache_tfdocs.outputs.cache-hit != 'true' && github.event.inputs.TFDOCS
+        if: steps.cache_tfdocs.outputs.cache-hit != 'true' && github.event.inputs.TF_DOCS
         run: |
           curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/v${TFDOCS_VERSION}/terraform-docs-v${TFDOCS_VERSION}-$(uname)-amd64.tar.gz
           tar -xzf terraform-docs.tar.gz
@@ -108,7 +108,7 @@ jobs:
 
       # see: https://terraform-docs.io/user-guide/configuration/
       - name: build docs
-        if: github.event.inputs.TFDOCS
+        if: github.event.inputs.TF_DOCS
         run: |
           if [ -f ".tfdocs.yaml" ]
           then
