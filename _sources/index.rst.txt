@@ -7,4 +7,5 @@ Welcome to cumberland-cloud/workflows' documentation!
 
    OVERVIEW
    CATALOGUE
+   AWS
    TERRAFORM
