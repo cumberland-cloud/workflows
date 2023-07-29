@@ -9,6 +9,11 @@ on:
         description: Path, including filename, of the Terraform state file to use. If not specified, Terraform will be initialized without any values being passed into the backend configuration.
         required: false
         type: string
+      TF_APPLY:
+        description: Flag to signal that Terraform should deploy the generated plan. Without this flag, this workflow will only validate the plan; it will not actually create any resources.
+        required: false
+        type: boolean 
+        default: false
     # see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onworkflow_callsecrets
     secrets:
       AWS_IAM_USER:
@@ -131,7 +136,7 @@ jobs:
           issue-body: "Please approve or deny the deployment."
 
       - name: apply
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && ${{ inputs.TF_APPLY }}
         run: |
           terraform apply \
             -no-color \
