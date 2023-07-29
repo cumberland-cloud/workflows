@@ -33,7 +33,7 @@ jobs:
         id: cache_checkov
         uses: actions/cache@v3
         with:
-          path: .venv
+          path: $${{ env.GITHUB_WORKSPACE }}/.venv
           key: ${{ github.repository }}-checkov-venv
 
       - name: job dependencies
@@ -72,7 +72,7 @@ jobs:
         id: cache_tfsec
         uses: actions/cache@v3
         with:
-          path: ~/bin
+          path: $${{ env.GITHUB_WORKSPACE }}/bin
           key: ${{ github.repository }}-tfsec
 
       - name: dependencies
