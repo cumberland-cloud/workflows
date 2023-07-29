@@ -127,7 +127,7 @@ jobs:
             -out=$(pwd)/plan
           
       - uses: trstringer/manual-approval@v1
-        if: github.event_name == 'pull_request' && ${{ inputs.TF_APPLY }}
+        if: github.event_name == 'pull_request' && github.events.inputs.TF_APPLY
         with:
           secret: ${{ github.TOKEN }}
           approvers: chinchalinchin
@@ -136,7 +136,7 @@ jobs:
           issue-body: "Please approve or deny the deployment."
 
       - name: apply
-        if: github.event_name == 'pull_request' && ${{ inputs.TF_APPLY }}
+        if: github.event_name == 'pull_request' && github.events.inputs.TF_APPLY
         run: |
           terraform apply \
             -no-color \
