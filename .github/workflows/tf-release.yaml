@@ -101,7 +101,7 @@ jobs:
           mv terraform ${GITHUB_WORKSPACE}/bin/
 
       - name: configure backend and initialize plugins
-        if: steps.cache_terraform_plugins.cache-hit != 'true' && github.events.inputs.TF_STATE_KEY != ''
+        if: steps.cache_terraform_plugins.cache-hit != 'true' && inputs.TF_STATE_KEY != ''
         run: |
           if [ ! -d "${GITHUB_WORKSPACE}/plugins" ]; then
             mkdir ${GITHUB_WORKSPACE}/plugins
@@ -111,7 +111,7 @@ jobs:
             -backend-config="key=${TF_STATE_KEY}"
 
       - name: initialize plugins
-        if: steps.cache_terraform_plugins.cache-hit != 'true' && github.events.inputs.TF_STATE_KEY == ''
+        if: steps.cache_terraform_plugins.cache-hit != 'true' && inputs.TF_STATE_KEY == ''
         run: |
           if [ ! -d "${GITHUB_WORKSPACE}/plugins" ]; then
             mkdir ${GITHUB_WORKSPACE}/plugins
@@ -127,7 +127,7 @@ jobs:
             -out=$(pwd)/plan
           
       - uses: trstringer/manual-approval@v1
-        if: github.event_name == 'pull_request' && github.events.inputs.TF_APPLY
+        if: github.event_name == 'pull_request' && inputs.TF_APPLY
         with:
           secret: ${{ github.TOKEN }}
           approvers: chinchalinchin
@@ -136,7 +136,7 @@ jobs:
           issue-body: "Please approve or deny the deployment."
 
       - name: apply
-        if: github.event_name == 'pull_request' && github.events.inputs.TF_APPLY
+        if: github.event_name == 'pull_request' && inputs.TF_APPLY
         run: |
           terraform apply \
             -no-color \
