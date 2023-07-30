@@ -7,6 +7,8 @@ jobs:
   checkov:
     name: terraform checkov scan
     runs-on: ubuntu-latest
+    env:
+      CHECKOV_VERSION: 2.3.347
     steps:
       # see: https://github.com/actions/checkout
       - name: checkout
@@ -28,24 +30,23 @@ jobs:
                                   build-essential
 
       # see: https://github.com/actions/cache
-      # NOTE: cache is keyed around `provider.tf`. See README for more information.
       - name: cache
         id: cache_checkov
         uses: actions/cache@v3
         with:
-          path: .venv
-          key: ${{ github.repository }}-checkov-venv
+          path: ${{ github.workspace }}/venv
+          key: ${{ github.repository }}-checkov-${{ env.CHECKOV_VERSION }}-venv
 
       - name: job dependencies
         if: steps.cache_checkov.outputs.cache-hit != 'true'
         run: |
-          python3 -m venv ${GITHUB_WORKSPACE}/.venv
-          source ${GITHUB_WORKSPACE}/.venv/bin/activate
-          pip3 install checkov
+          python3 -m venv ${GITHUB_WORKSPACE}/venv
+          source ${GITHUB_WORKSPACE}/venv/bin/activate
+          pip3 install checkov==${CHECKOV_VERSION}
 
       - name: scan
         run: |
-          source ${GITHUB_WORKSPACE}/.venv/bin/activate
+          source ${GITHUB_WORKSPACE}/venv/bin/activate
           checkov --directory . \
             --download-external-modules True \
             --skip-check CKV2_GHA_1
@@ -54,6 +55,8 @@ jobs:
   tfsec:
     name: terraform security scan
     runs-on: ubuntu-latest
+    env:
+      TFSEC_VERSION: 1.28.1
     steps:
       # see: 
         # GITHUB_ENV: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
@@ -61,7 +64,6 @@ jobs:
       - name: environment
         run: |
           echo "PATH=${GITHUB_WORKSPACE}/bin:$PATH" >> $GITHUB_ENV
-          echo "TFSEC_INSTALL_PATH=${GITHUB_WORKSPACE}/bin" >> $GITHUB_ENV
         
       # https://github.com/actions/checkout
       - name: checkout
@@ -72,8 +74,8 @@ jobs:
         id: cache_tfsec
         uses: actions/cache@v3
         with:
-          path: bin
-          key: ${{ github.repository }}-tfsec
+          path: ${{ github.workspace }}/bin
+          key: ${{ github.repository }}-${{ env.TFSEC_VERSION }}-tfsec
 
       - name: dependencies
         if: steps.cache_tfsec.outputs.cache-hit != 'true'
@@ -81,7 +83,8 @@ jobs:
           if [ ! -d "${GITHUB_WORKSPACE}/bin" ]; then
             mkdir ${GITHUB_WORKSPACE}/bin
           fi
-          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+          curl -L -o ${GITHUB_WORKSPACE}/bin/tfsec https://github.com/aquasecurity/tfsec/releases/download/v${TFSEC_VERSION}/tfsec-linux-amd64
+          chmod +x ${GITHUB_WORKSPACE}/bin/tfsec
 
       # see: https://aquasecurity.github.io/tfsec/v1.27.6/guides/configuration/config/
       - name: scan
