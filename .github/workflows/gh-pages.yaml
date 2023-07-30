@@ -82,7 +82,7 @@ jobs:
         id: cache_sphinx
         uses: actions/cache@v3
         with:
-          path: $${ github.workspace }}/venv
+          path: ${{ github.workspace }}/venv
           key: ${{ github.repository }}-${{ env.SPHINX_VERSION }}-sphinx-venv
 
       - name: doc dependencies
