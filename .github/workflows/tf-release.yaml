@@ -1,4 +1,4 @@
-name: Terraform Release
+name: terraform release
 
 # https://docs.github.com/en/actions/using-workflows/reusing-workflows#overview
 on: 

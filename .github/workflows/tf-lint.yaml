@@ -1,4 +1,4 @@
-name: Terraform Lint
+name: terraform lint
 
 # see: https://docs.github.com/en/actions/using-workflows/reusing-workflows#overview
 on: workflow_call

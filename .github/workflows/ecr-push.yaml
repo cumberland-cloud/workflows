@@ -1,4 +1,4 @@
-name: ECR Build and Push
+name: ecr push
 
 # see: https://docs.github.com/en/actions/using-workflows/reusing-workflows#overview
 on: 
