@@ -88,6 +88,8 @@ jobs:
       - name: doc dependencies
         if: steps.cache_sphinx.outputs.cache-hit != 'true'
         run: |
+          echo "${GITHUB_WORKSPACE}"
+          echo "${{ github.workspace }}"
           python3 -m venv ${GITHUB_WORKSPACE}/venv
           source ${GITHUB_WORKSPACE}/venv/bin/activate
           pip3 install sphinx==${SPHINX_VERSION} \
