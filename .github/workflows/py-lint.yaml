@@ -5,7 +5,14 @@ name: Python Lint
 
 
 # see: https://docs.github.com/en/actions/using-workflows/reusing-workflows#overview
-on: workflow_call
+on: 
+  workflow_call:
+    inputs: 
+      SRC_DIR:
+        description: Path, relative to the repository root directory, where the source code is located.
+        required: false
+        type: string
+        default: .
 
 jobs:
   tflint:
@@ -13,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PYLINT_VERSION: 2.17.5
+      SRC_DIR: ${{ inputs.SRC_DIR }}
 
     steps:
       # see: 
@@ -43,8 +51,5 @@ jobs:
       - name: plugins
         if: steps.cache_plugins.outputs.cache-hit != 'true'
         run: |
+          cd ${SRC_DIR}
           pylint --rc-file .pylint.rc
-
-      # - name: lint
-      #   run: |
-      #     tflint

@@ -36,7 +36,7 @@ jobs:
     env:
       USERNAME: ${{ inputs.ACTIONS_BOT_USERNAME }}
       EMAIL: ${{ inputs.ACTIONS_BOT_EMAIL }}
-      TF_DOCS: ${{ inputs.TFDOCS }}
+      TF_DOCS: ${{ inputs.TF_DOCS }}
       TFDOCS_VERSION: 0.16.0
       SPHINX_VERSION: 4.3.0
       MATERIAL_VERSION: 0.0.35
@@ -46,7 +46,7 @@ jobs:
     steps:
       # see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
       - name: environment
-        run: echo "PATH=$(pwd)/bin:$PATH" >> $GITHUB_ENV
+        run: echo "PATH=${GITHUB_WORKSPACE}/bin:$PATH" >> $GITHUB_ENV
 
       # TODO: how to cache system dependencies?
       # see: https://github.com/cli/cli/issues/6175#issuecomment-1238477714
@@ -88,8 +88,8 @@ jobs:
       - name: doc dependencies
         if: steps.cache_sphinx.outputs.cache-hit != 'true'
         run: |
-          python3 -m venv $(pwd)/venv
-          source $(pwd)/venv/bin/activate
+          python3 -m venv ${GITHUB_WORKSPACE}/venv
+          source ${GITHUB_WORKSPACE}/venv/bin/activate
           pip3 install sphinx==${SPHINX_VERSION} \
                         sphinx-material==${MATERIAL_VERSION} \
                         myst-parser==${MYST_VERSION} \
@@ -101,10 +101,10 @@ jobs:
           curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/v${TFDOCS_VERSION}/terraform-docs-v${TFDOCS_VERSION}-$(uname)-amd64.tar.gz
           tar -xzf terraform-docs.tar.gz
           chmod +x terraform-docs
-          if [ ! -d "bin" ]; then
-            mkdir bin
+          if [ ! -d "${GITHUB_WORKSPACE}/bin" ]; then
+            mkdir ${GITHUB_WORKSPACE}/bin
           fi
-          mv terraform-docs bin
+          mv terraform-docs ${GITHUB_WORKSPACE}/bin
 
       # see: https://terraform-docs.io/user-guide/configuration/
       - name: build docs
