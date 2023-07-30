@@ -36,7 +36,7 @@ jobs:
     env:
       USERNAME: ${{ inputs.ACTIONS_BOT_USERNAME }}
       EMAIL: ${{ inputs.ACTIONS_BOT_EMAIL }}
-      TFDOCS: ${{ inputs.TFDOCS }}
+      TF_DOCS: ${{ inputs.TFDOCS }}
       TFDOCS_VERSION: 0.16.0
       SPHINX_VERSION: 4.3.0
       MATERIAL_VERSION: 0.0.35
