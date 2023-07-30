@@ -49,7 +49,7 @@ jobs:
           source ${GITHUB_WORKSPACE}/venv/bin/activate
           checkov --directory . \
             --download-external-modules True \
-            --skip-path ${GITHUB_WORKSPACE}/venv
+            --skip-path venv
             
 
   tfsec:
