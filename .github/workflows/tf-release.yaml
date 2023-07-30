@@ -101,7 +101,7 @@ jobs:
           mv terraform ${GITHUB_WORKSPACE}/bin/
 
       - name: configure backend and initialize plugins
-        if: steps.cache_terraform_plugins.cache-hit != 'true' && github.event.inputs.TF_STATE_KEY != ''
+        if: steps.cache_terraform_plugins.cache-hit != 'true' && github.events.inputs.TF_STATE_KEY != ''
         run: |
           if [ ! -d "${GITHUB_WORKSPACE}/plugins" ]; then
             mkdir ${GITHUB_WORKSPACE}/plugins
@@ -111,7 +111,7 @@ jobs:
             -backend-config="key=${TF_STATE_KEY}"
 
       - name: initialize plugins
-        if: steps.cache_terraform_plugins.cache-hit != 'true' && github.event.inputs.TF_STATE_KEY == ''
+        if: steps.cache_terraform_plugins.cache-hit != 'true' && github.events.inputs.TF_STATE_KEY == ''
         run: |
           if [ ! -d "${GITHUB_WORKSPACE}/plugins" ]; then
             mkdir ${GITHUB_WORKSPACE}/plugins
