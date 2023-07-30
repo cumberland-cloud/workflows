@@ -44,13 +44,15 @@ jobs:
           source ${GITHUB_WORKSPACE}/venv/bin/activate
           pip3 install checkov==${CHECKOV_VERSION}
 
+      # skip CKV2_GHA_1: "Ensure top-level permissions are not set to write-all"
+      # because ignoring at the file level doesn't work...
       - name: scan
         run: |
           source ${GITHUB_WORKSPACE}/venv/bin/activate
           checkov --directory . \
             --download-external-modules True \
-            --skip-path venv
-            
+            --skip-path venv \
+            --skip-check CKV2_GHA_1      
 
   tfsec:
     name: terraform security scan
