@@ -18,12 +18,10 @@ on:
       DOCKERFILE_DIR:
         default: "."
         description: "Location of the Dockerfile to build, relative to the repository root directory. Do not include trailing slash."
-        required: true
         type: string
       DOCKER_BUILD_CONTEXT:
         default: "."
         description: "Location of the Docker build context, relative to the repository root directory."
-        required: true
         type: string
     # see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onworkflow_callsecrets
     secrets:

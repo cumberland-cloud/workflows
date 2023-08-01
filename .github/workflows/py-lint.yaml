@@ -15,8 +15,8 @@ on:
         default: .
 
 jobs:
-  tflint:
-    name: terraform lint
+  pylint:
+    name: python lint
     runs-on: ubuntu-latest
     env:
       PYLINT_VERSION: 2.17.5
