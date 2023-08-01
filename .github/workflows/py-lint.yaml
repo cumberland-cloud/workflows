@@ -51,5 +51,6 @@ jobs:
       - name: plugins
         if: steps.cache_plugins.outputs.cache-hit != 'true'
         run: |
+          source ${GITHUB_WORKSPACE}/venv/bin/activate
           cd ${SRC_DIR}
           pylint --rc-file .pylint.rc
