@@ -75,7 +75,7 @@ jobs:
 
       # see: https://github.com/actions/cache
       - name: tfdocs cache
-        if: inputs.TF_DOCS
+        if: inputs.TF_DOCS && !inputs.NO_CACHE
         id: cache_tfdocs
         uses: actions/cache@v3
         with:
@@ -84,6 +84,7 @@ jobs:
 
       - name: sphinx cache
         id: cache_sphinx
+        if: !inputs.NO_CACHE
         uses: actions/cache@v3
         with:
           path: ${{ github.workspace }}/venv
@@ -100,7 +101,7 @@ jobs:
                         groundwork-sphinx-theme==${GROUNDWORK_VERSION}
 
       - name: job dependencies
-        if: steps.cache_tfdocs.outputs.cache-hit != 'true' && inputs.TF_DOCS
+        if: steps.cache_tfdocs.outputs.cache-hit != 'true' && inputs.TF_DOCS && !inputs.NO_CACHE
         run: |
           curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/v${TFDOCS_VERSION}/terraform-docs-v${TFDOCS_VERSION}-$(uname)-amd64.tar.gz
           tar -xzf terraform-docs.tar.gz
