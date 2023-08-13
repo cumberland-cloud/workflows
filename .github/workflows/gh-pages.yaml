@@ -14,8 +14,14 @@ on:
     inputs:
       NO_CACHE:
         required: false
+        description: Flag to turn off dependency caching.
         default: false 
         type: boolean 
+      LATEX:
+        required: false
+        description: Flag to turn install LaTeX (if Sphinx needs it)
+        default: false
+        type: boolean
       TF_DOCS:
         required: false
         description: Flag to run tf-docs before sphinx to generate markdown. Note, it is assumed the .terraform-docs.yml is configured to output markdown into the Sphinx /source/ directory and that no further configuration is required.
@@ -61,10 +67,6 @@ jobs:
             && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
             && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" |\
               sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-              
-          sudo apt update -y 
-          sudo apt upgrade -y 
-          sudo apt install texlive-latex-extra -y
 
           sudo apt-get update -y 
           sudo apt-get install -y \
@@ -72,6 +74,13 @@ jobs:
             python3-venv \
             python3-pip \
             build-essential
+
+      - name: latex dependency
+        if: ${{ inputs.LATEX }}
+        run: |
+          sudo apt update -y 
+          sudo apt upgrade -y 
+          sudo apt install texlive-latex-extra -y
 
       # see: https://github.com/actions/checkout
       - name: checkout
