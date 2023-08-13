@@ -91,7 +91,7 @@ jobs:
           key: ${{ github.repository }}-${{ env.SPHINX_VERSION }}-sphinx-venv
 
       - name: doc dependencies
-        if: steps.cache_sphinx.outputs.cache-hit != 'true' && !inputs.NO_CACHE
+        if: steps.cache_sphinx.outputs.cache-hit != 'true' || !inputs.NO_CACHE
         run: |
           python3 -m venv ${GITHUB_WORKSPACE}/venv
           source ${GITHUB_WORKSPACE}/venv/bin/activate
@@ -101,7 +101,7 @@ jobs:
                         groundwork-sphinx-theme==${GROUNDWORK_VERSION}
 
       - name: job dependencies
-        if: steps.cache_tfdocs.outputs.cache-hit != 'true' && inputs.TF_DOCS && !inputs.NO_CACHE
+        if: steps.cache_tfdocs.outputs.cache-hit != 'true' && inputs.TF_DOCS || !inputs.NO_CACHE
         run: |
           curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/v${TFDOCS_VERSION}/terraform-docs-v${TFDOCS_VERSION}-$(uname)-amd64.tar.gz
           tar -xzf terraform-docs.tar.gz
