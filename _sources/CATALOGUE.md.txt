@@ -21,9 +21,9 @@ This workflow will build a **Docker** image and then push the image up to an **E
 
 [Source](https://github.com/cumberland-cloud/workflows/blob/main/.github/workflows/gh-pages.yaml)
 
-This workflow will compile documentation into the `gh-pages` branch of the repository. Based on the files it finds in your repository, it will attempt to construct the documentation through different methods. For example, if your repository has a _.terraform-docs.yml_, it will use `tf-docs` to process the _.tf_ files into _.md_ files.
+This workflow will compile documentation into the `gh-pages` branch of the repository. Based on the files it finds in your repository, it will attempt to construct the documentation through different methods. For example, if your repository has a _.terraform-docs.yml_, it will use [tf-docs](https://terraform-docs.io/) to process the _.tf_ files into _.md_ files.
 
-This workflow uses a **Python** library, [Sphinx](), to transpile _.md_ markdown files into web-hostable _.html_ files. The result of this transpilation is pushed to the `gh-pages` and hosted using the [Github Pages functionality](https://pages.github.com).
+This workflow uses a **Python** library, [Sphinx](https://www.sphinx-doc.org/en/master/index.html), to transpile _.md_ markdown files into web-hostable _.html_ files. The result of this transpilation is pushed to the `gh-pages` and hosted using the [Github Pages functionality](https://pages.github.com).
 
 ### Secrets
 
@@ -52,7 +52,13 @@ This workflow performs an update on existing **Lambda** function using an **ECR*
 
 [Source](https://github.com/cumberland-cloud/workflows/blob/main/.github/workflows/py-lint.yaml)
 
-TODO
+The workflow lints **Python**
+### Inputs
+
+| Name | Description | Type | Required | 
+| ---- | ----------- | ---- | -------- |
+| SRC_DIR | Path, relative to the repository root directory, where the source code is located. Defaults to the repository root directory. | string | false |
+ 
 
 ## tf-lint
 
