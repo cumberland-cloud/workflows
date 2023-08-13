@@ -84,7 +84,7 @@ jobs:
 
       - name: sphinx cache
         id: cache_sphinx
-        if: !inputs.NO_CACHE
+        if: ${{ !inputs.NO_CACHE }}
         uses: actions/cache@v3
         with:
           path: ${{ github.workspace }}/venv
