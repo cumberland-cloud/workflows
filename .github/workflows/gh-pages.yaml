@@ -53,6 +53,7 @@ jobs:
       BOOK_VERSION: 1.0.1
       GROUNDWORK_VERSION: 1.1.1
       MATERIAL_VERSION: 0.0.35
+      TOOLBOX_VERSION: 3.5.0
 
     steps:
       # see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
@@ -114,7 +115,8 @@ jobs:
                         sphinx-material==${MATERIAL_VERSION} \
                         myst-parser==${MYST_VERSION} \
                         groundwork-sphinx-theme==${GROUNDWORK_VERSION} \
-                        sphinx-book-theme==${BOOK_VERSION}
+                        sphinx-book-theme==${BOOK_VERSION} \
+                        sphinx-toolbox==${TOOLBOX_VERSION}
 
       - name: job dependencies
         if: steps.cache_tfdocs.outputs.cache-hit != 'true' && inputs.TF_DOCS || !inputs.NO_CACHE
