@@ -60,7 +60,7 @@ jobs:
       MATERIAL_VERSION: 0.0.35
       TOOLBOX_VERSION: 3.5.0
       MATPLOTLIB_VERSION: 3.7.2
-      MPLBACKEND: TKAgg
+      MPLBACKEND: Agg
 
 
     steps:
