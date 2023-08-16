@@ -60,6 +60,8 @@ jobs:
       MATERIAL_VERSION: 0.0.35
       TOOLBOX_VERSION: 3.5.0
       MATPLOTLIB_VERSION: 3.7.2
+      MPLBACKEND: TKAgg
+
 
     steps:
       # see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
