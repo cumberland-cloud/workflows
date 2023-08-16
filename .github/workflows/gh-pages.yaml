@@ -133,7 +133,7 @@ jobs:
         if: steps.cache_sphinx.outputs.cache-hit != 'true' || !inputs.NO_CACHE && inputs.PYTHON_MATHLIBS 
         run: |
           source ${GITHUB_WORKSPACE}/venv/bin/activate
-          pip3 install matplotlib==${SPHINX_VERSION}
+          pip3 install matplotlib==${MATPLOTLIB_VERSION}
 
       - name: job dependencies
         if: steps.cache_tfdocs.outputs.cache-hit != 'true' && inputs.TF_DOCS || !inputs.NO_CACHE
