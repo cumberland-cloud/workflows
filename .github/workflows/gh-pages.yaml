@@ -22,6 +22,11 @@ on:
         description: Flag to turn install LaTeX (if Sphinx needs it)
         default: false
         type: boolean
+      PYTHON_MATHLIBS:
+        required: false
+        description: Flag to install Python libraries for rendering mathematics.
+        default: false
+        type: boolean
       TF_DOCS:
         required: false
         description: Flag to run tf-docs before sphinx to generate markdown. Note, it is assumed the .terraform-docs.yml is configured to output markdown into the Sphinx /source/ directory and that no further configuration is required.
@@ -54,6 +59,7 @@ jobs:
       GROUNDWORK_VERSION: 1.1.1
       MATERIAL_VERSION: 0.0.35
       TOOLBOX_VERSION: 3.5.0
+      MATPLOTLIB_VERSION: 3.7.2
 
     steps:
       # see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
@@ -84,6 +90,11 @@ jobs:
           sudo apt upgrade -y 
           sudo apt install texlive-latex-extra -y
           sudo apt-get install -y dvipng
+
+      - name: python math dependency
+        if: inputs.PYTHON_MATHLIBS
+        run: |
+          sudo apt-get install -y python3-tk
 
       # see: https://github.com/actions/checkout
       - name: checkout
@@ -117,6 +128,12 @@ jobs:
                         groundwork-sphinx-theme==${GROUNDWORK_VERSION} \
                         sphinx-book-theme==${BOOK_VERSION} \
                         sphinx-toolbox==${TOOLBOX_VERSION}
+
+      - name: doc math dependencies
+        if: steps.cache_sphinx.outputs.cache-hit != 'true' || !inputs.NO_CACHE && inputs.PYTHON_MATHLIBS 
+        run: |
+          source ${GITHUB_WORKSPACE}/venv/bin/activate
+          pip3 install matplotlib==${SPHINX_VERSION}
 
       - name: job dependencies
         if: steps.cache_tfdocs.outputs.cache-hit != 'true' && inputs.TF_DOCS || !inputs.NO_CACHE
