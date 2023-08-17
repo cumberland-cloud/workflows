@@ -51,7 +51,6 @@ jobs:
     env:
       USERNAME: ${{ inputs.ACTIONS_BOT_USERNAME }}
       EMAIL: ${{ inputs.ACTIONS_BOT_EMAIL }}
-      TF_DOCS: ${{ inputs.TF_DOCS }}
       TFDOCS_VERSION: 0.16.0
       SPHINX_VERSION: 4.3.0
       MYST_VERSION: 0.15.2
@@ -62,7 +61,6 @@ jobs:
       MATPLOTLIB_VERSION: 3.7.2
       SHIBUKAWA_VERSION: 0.1.6
       MPLBACKEND: Agg
-
 
     steps:
       # see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
