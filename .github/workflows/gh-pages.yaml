@@ -12,6 +12,11 @@ on:
   workflow_call:
     # see: https://docs.github.com/en/actions/using-workflows/reusing-workflows#passing-inputs-and-secrets-to-a-reusable-workflow
     inputs:
+      DOCS_DIR:
+        required: false
+        description: Directory where docs are kept
+        default: docs
+        type: string
       NO_CACHE:
         required: false
         description: Flag to turn off dependency caching.
@@ -51,6 +56,7 @@ jobs:
     env:
       USERNAME: ${{ inputs.ACTIONS_BOT_USERNAME }}
       EMAIL: ${{ inputs.ACTIONS_BOT_EMAIL }}
+      DOCS_DIR: ${{ inputs.DOCS_DIR }}
       TFDOCS_VERSION: 0.16.0
       SPHINX_VERSION: 4.3.0
       MYST_VERSION: 0.15.2
@@ -158,17 +164,15 @@ jobs:
       # see: https://www.sphinx-doc.org/en/master/
       - name: build html
         run: |
-          echo "${GITHUB_WORKSPACE}"
-          echo "${{ github.workspace }}"
           source ${GITHUB_WORKSPACE}/venv/bin/activate
-          cd docs
+          cd ${DOCS_DIR}
           make html
           cd ..
           
       - name: copy html to tmp
         run: |
           mkdir $(pwd)/../tmp
-          cp -ap ./docs/build/html/. $(pwd)/../tmp/
+          cp -ap ./${DOCS_DIR}/build/html/. $(pwd)/../tmp/
 
       # note: disjunction of command with true to avoid possible failures
       - name: commit
