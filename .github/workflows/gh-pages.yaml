@@ -58,7 +58,7 @@ jobs:
       EMAIL: ${{ inputs.ACTIONS_BOT_EMAIL }}
       DOCS_DIR: ${{ inputs.DOCS_DIR }}
       TFDOCS_VERSION: 0.16.0
-      SPHINX_VERSION: 4.3.0
+      SPHINX_VERSION: 5.0.0
       MYST_VERSION: 0.15.2
       BOOK_VERSION: 1.0.1
       GROUNDWORK_VERSION: 1.1.1
