@@ -4,6 +4,7 @@
 **/*.env
 !**/*.sample.env
 **/.venv
+**/venv
 **/.terraform
 **/*.tfstate
 **/*.tfstate.backup
